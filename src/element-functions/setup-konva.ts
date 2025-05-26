@@ -1,7 +1,7 @@
 import Konva from "konva";
+import { type Body, type System } from "detect-collisions";
+
 import { DIMENSIONS } from "../constants";
-import type { Layer } from "konva/lib/Layer";
-import { Line, type Body, type System } from "detect-collisions";
 
 const setUpKonva = (system: System<Body>) => {
   var stage = new Konva.Stage({
@@ -32,12 +32,12 @@ const setUpKonva = (system: System<Body>) => {
   });
   layer.add(frame);
 
-  const lineStart = { x: 0, y: 2 * (DIMENSIONS.HEIGHT / 3) };
-  const lineEnd = { x: DIMENSIONS.WIDTH, y: 2 * (DIMENSIONS.HEIGHT / 3) };
+  const lineStart = { x: 0, y: DIMENSIONS.HEIGHT - 20 };
+  const lineEnd = { x: DIMENSIONS.WIDTH, y: DIMENSIONS.HEIGHT - 20 };
 
   var line = new Konva.Line({
     points: [lineStart.x, lineStart.y, lineEnd.x, lineEnd.y],
-    stroke: "blue",
+    stroke: "red",
     strokeWidth: 1,
     lineCap: "round",
   });

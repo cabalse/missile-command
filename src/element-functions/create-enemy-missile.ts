@@ -1,6 +1,6 @@
 import Konva from "konva";
 
-import CONST, { DIMENSIONS } from "../constants";
+import { DIMENSIONS } from "../constants";
 import getLine from "../utilities/get-line";
 import getRandomNumber from "../utilities/get-random-number";
 
@@ -9,10 +9,12 @@ import type { Layer } from "konva/lib/Layer";
 import type { FractionData } from "../types/fraction-data";
 import type { Body, System } from "detect-collisions";
 import type { DetectLine } from "../types/detect-line";
+import type { Coordinate } from "../types/coordinate";
 
 const createEnemyMissile = (
   layer: Layer,
   system: System<Body>,
+  targets: Coordinate[],
   constants: FractionData
 ): Missile => {
   // Missile ID
@@ -26,11 +28,11 @@ const createEnemyMissile = (
   };
 
   // Select a random target point from the predefined target points, for now! (TODO: Make this predetermined)
-  const targetPoint = getRandomNumber(0, 3);
+  const targetPoint = getRandomNumber(0, targets.length);
   // Define the missiles trajectories line
   const linePoints = getLine(
     start,
-    CONST.TARGET_POINTS[targetPoint],
+    targets[targetPoint],
     constants.MISSILE_LENGTH,
     constants.MISSILE_OFFSET
   );
@@ -62,7 +64,7 @@ const createEnemyMissile = (
     object: line,
     detectBody: lineDetect,
     start: start,
-    target: CONST.TARGET_POINTS[targetPoint],
+    target: targets[targetPoint],
     length: constants.MISSILE_LENGTH,
     speed: constants.MISSILE_SPEED,
     offset: constants.MISSILE_OFFSET,
