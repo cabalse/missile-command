@@ -1,10 +1,10 @@
 import type { Coordinate } from "../types/coordinate";
 
-function circlePoints(center: Coordinate, radius: number, segments: number) {
+function getCirclePoints(center: Coordinate, radius: number, segments: number) {
   const points = [];
   const angleStep = (Math.PI * 2) / segments;
 
-  for (let i = 0; i < segments; i++) {
+  for (let i = 0; i <= segments; i++) {
     const angle = i * angleStep;
     const x = center.x + Math.cos(angle) * radius;
     const y = center.y + Math.sin(angle) * radius;
@@ -14,4 +14,4 @@ function circlePoints(center: Coordinate, radius: number, segments: number) {
   return points;
 }
 
-export default circlePoints;
+export default getCirclePoints;

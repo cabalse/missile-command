@@ -1,6 +1,6 @@
-import type { Coordinate } from "../types/coordinate";
+import type { coordinate } from "../types/coordinate";
 
-function pointAlongLine(start: Coordinate, end: Coordinate, length: number) {
+function pointAlongLine(start: coordinate, end: coordinate, offset: number) {
   const dx = end.x - start.x;
   const dy = end.y - start.y;
   const distance = Math.sqrt(dx * dx + dy * dy);
@@ -9,7 +9,7 @@ function pointAlongLine(start: Coordinate, end: Coordinate, length: number) {
     return { x: start.x, y: start.y }; // Edge case: start and end are the same
   }
 
-  const ratio = length / distance;
+  const ratio = offset / distance;
 
   return {
     x: start.x + dx * ratio,
