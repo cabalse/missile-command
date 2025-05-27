@@ -1,4 +1,5 @@
 import type { Missile } from "../types/missile";
+import SIDES from "../types/sides";
 import getLine from "../utilities/get-line";
 
 const handleEnemyMissiles = (
@@ -7,6 +8,8 @@ const handleEnemyMissiles = (
   hitCallback?: (x: number, y: number) => void
 ) => {
   data.forEach((missile) => {
+    if (missile.side !== SIDES.ENEMY) return;
+
     missile.offset += missile.speed * deltaTime;
 
     const linePoints = getLine(

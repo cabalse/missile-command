@@ -10,6 +10,7 @@ import type { FractionData } from "../types/fraction-data";
 import type { Body, System } from "detect-collisions";
 import type { DetectLine } from "../types/detect-line";
 import type { Coordinate } from "../types/coordinate";
+import SIDES from "../types/sides";
 
 const createEnemyMissile = (
   layer: Layer,
@@ -61,6 +62,7 @@ const createEnemyMissile = (
   // Create the missile object with its properties
   const missile: Missile = {
     id: missileID,
+    side: SIDES.ENEMY,
     object: line,
     detectBody: lineDetect,
     start: start,

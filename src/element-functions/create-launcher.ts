@@ -5,6 +5,7 @@ import type { Layer } from "konva/lib/Layer";
 import type { Coordinate } from "../types/coordinate";
 import type { DetectBox } from "../types/detect-box";
 import type { Launcher } from "../types/launcher";
+import launcherPoints from "../figures/launcher-points";
 
 const createLauncher = (
   position: Coordinate,
@@ -29,27 +30,8 @@ const createLauncher = (
   const lx = launcherStartPoint.x;
   const ly = launcherStartPoint.y;
 
-  const points = [
-    lx - 7,
-    ly,
-    lx - 7,
-    ly - 5,
-    lx - 4,
-    ly - 5,
-    lx - 4,
-    ly - 10,
-    lx + 4,
-    ly - 10,
-    lx + 4,
-    ly - 5,
-    lx + 7,
-    ly - 5,
-    lx + 7,
-    ly,
-  ];
-
   const line = new Konva.Line({
-    points: points,
+    points: launcherPoints(lx, ly),
     stroke: "red",
     strokeWidth: 1,
     lineCap: "round",

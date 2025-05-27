@@ -2,6 +2,8 @@ type FractionData = {
   MISSILE_SPEED: number;
   MISSILE_LENGTH: number;
   MISSILE_OFFSET: number;
+  MAX_MISSILES: number;
+  TIME_BETWEEN_MISSILES: number;
   STRIKE_RADIUS: number;
   STRIKE_SEGMENTS: number;
   STRIKE_EXPAND_SPEED: number;

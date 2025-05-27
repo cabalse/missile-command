@@ -5,6 +5,7 @@ import type { Layer } from "konva/lib/Layer";
 import type { City } from "../types/city";
 import type { Coordinate } from "../types/coordinate";
 import type { DetectBox } from "../types/detect-box";
+import CityPoints from "../figures/city-points";
 
 const createCity = (
   position: Coordinate,
@@ -14,37 +15,8 @@ const createCity = (
   const x = position.x;
   const y = position.y;
 
-  const points = [
-    x,
-    y,
-    x,
-    y - 15,
-    x + 5,
-    y - 15,
-    x + 5,
-    y,
-    x + 10,
-    y,
-    x + 10,
-    y - 7,
-    x + 15,
-    y - 7,
-    x + 15,
-    y - 3,
-    x + 18,
-    y - 3,
-    x + 18,
-    y - 17,
-    x + 20,
-    y - 17,
-    x + 27,
-    y - 10,
-    x + 27,
-    y,
-  ];
-
   const line = new Konva.Line({
-    points: points,
+    points: CityPoints(x, y),
     stroke: "red",
     strokeWidth: 1,
     lineCap: "round",
