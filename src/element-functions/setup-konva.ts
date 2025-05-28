@@ -4,10 +4,11 @@ import { type Body, type System } from "detect-collisions";
 import { DIMENSIONS } from "../constants";
 import type { KonvaEventObject } from "konva/lib/Node";
 import type { Stage } from "konva/lib/Stage";
+import type { DetectObject } from "../types/detect-object";
 
 const setUpKonva = (
   system: System<Body>,
-  onClick: (e: KonvaEventObject<MouseEvent, Stage>) => void
+  onClick: (e: KonvaEventObject<MouseEvent, Stage>, layer: Konva.Layer) => void
 ) => {
   var stage = new Konva.Stage({
     container: "app",
@@ -15,11 +16,11 @@ const setUpKonva = (
     height: DIMENSIONS.HEIGHT,
   });
 
-  stage.on("mousedown", (e) => {
-    onClick(e);
-  });
-
   var layer = new Konva.Layer();
+
+  stage.on("mousedown", (e) => {
+    onClick(e, layer);
+  });
 
   stage.add(layer);
 
@@ -53,7 +54,10 @@ const setUpKonva = (
   });
   layer.add(line);
 
-  const lineDetect = system.createLine(lineStart, lineEnd);
+  const lineDetect = system.createLine(lineStart, lineEnd) as DetectObject;
+  lineDetect.data = {
+    isGround: true,
+  };
 
   return { layer: layer, line: lineDetect };
 };

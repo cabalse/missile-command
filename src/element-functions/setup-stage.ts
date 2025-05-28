@@ -17,7 +17,7 @@ const setupStage = (
 
   let base = 379;
   let xDistance = 70;
-  let amount = 5;
+  let amount = 6;
   let widthOfTarget = 40;
 
   let widthCenter = DIMENSIONS.WIDTH / 2;

@@ -26,14 +26,17 @@ import writeSentence from "./element-functions/write-sentence";
 import type { Line } from "konva/lib/shapes/Line";
 import type { Rect } from "konva/lib/shapes/Rect";
 import handleText from "./animation-functions/handle-text";
+import type { GameStateKey } from "./types/game-state";
+import GAME_STATE from "./types/game-state";
+import cleanUpTextElements from "./helpers/cleanup-text-elements";
 
-let gameState = "init";
+let gameState: GameStateKey = GAME_STATE.PRE_GAME;
 let stage = 0;
 let lastTick = 0;
 let ticks = 0;
 
-const missiles: Missile[] = [];
-const explosions: Explosion[] = [];
+let missiles: Missile[] = [];
+let explosions: Explosion[] = [];
 let targetElements: (City | Launcher)[] = [];
 let targetPoints: Coordinate[] = [];
 let textElements: (Line | Rect)[] = [];
@@ -41,28 +44,35 @@ let textElements: (Line | Rect)[] = [];
 const system = new System(); // Collision System
 
 // Player Mouse Down Event Handler
-const handleMouseDown = (e: Konva.KonvaEventObject<MouseEvent>) => {
-  const x = e.evt.offsetX;
-  const y = e.evt.offsetY;
-  explosions.push(
-    CreateExplosion(layer, x, y, SIDES.PLAYER, system, PLAYER_CONST)
-  );
+const handleMouseDown = (
+  e: Konva.KonvaEventObject<MouseEvent>,
+  layer: Konva.Layer
+) => {
+  switch (gameState) {
+    case GAME_STATE.PRE_GAME_WAIT:
+      gameState = GAME_STATE.INIT;
+      break;
+    case GAME_STATE.RUNNING:
+      const x = e.evt.offsetX;
+      const y = e.evt.offsetY;
+      explosions.push(
+        CreateExplosion(layer, x, y, SIDES.PLAYER, system, PLAYER_CONST)
+      );
+      break;
+    case GAME_STATE.GAME_OVER_WAIT:
+      gameState = GAME_STATE.INIT;
+      break;
+  }
 };
 
 // Set up the Konva stage and layer, handle the player on click events
 const { layer, line } = setUpKonva(system, handleMouseDown);
-
-textElements = writeSentence("MISSILE COMMANDE", { x: 55, y: 100 }, layer);
 
 const handleMissileHit = (x: number, y: number) => {
   explosions.push(
     CreateExplosion(layer, x, y, SIDES.ENEMY, system, ENEMY_CONST)
   );
 };
-
-// Create the initial stage with cities and launchers, and create viable target coordinates
-targetElements = setupStage(gameState, layer, system);
-targetPoints = getTargets(targetElements);
 
 // Main Animation Loop
 const anim = new Konva.Animation(function (frame) {
@@ -71,57 +81,100 @@ const anim = new Konva.Animation(function (frame) {
   const deltaTime = frame.timeDiff / CONST.TIME_FRAGMENT;
   if (Math.floor(frame.time) > lastTick) ticks += 1;
 
-  // Generate the attacks
-  lastTick = generateAttacks(
-    stage,
-    Math.floor(frame.time),
-    lastTick,
-    layer,
-    system,
-    targetPoints,
-    missiles
-  );
-
-  // Handle animations of the elements
-  handleEnemyMissiles(deltaTime, missiles);
-  handleExplosions(deltaTime, explosions, SIDES.ENEMY, ENEMY_CONST);
-  handleExplosions(deltaTime, explosions, SIDES.PLAYER, PLAYER_CONST);
-  handleText(ticks, textElements);
-  // Handle collosion detection
-  system.checkAll(({ a, b }: Response) => {
-    const body = a as DetectObject;
-    const collider = b as DetectObject;
-
-    // Collision between an ENEMY MISSILE and a TARGET
-    if (
-      collider.data?.isMissile &&
-      collider.data?.side === SIDES.ENEMY &&
-      body.data?.isTarget
-    ) {
-      handleMissileHit(collider.pos.x, collider.pos.y); // Create explosion at the target hit
-      removeTargetElement(body.data?.id as string, targetElements); // Remove the target element from the game
-      targetPoints = getTargets(targetElements); // Update the target points after removing the target
-      system.remove(body); // Remove the target body from the collision system
-      system.remove(collider); // Remove the missile body from the collision system
+  switch (gameState) {
+    case GAME_STATE.PRE_GAME: {
+      textElements = writeSentence("MISSILE COMMAND", { x: 90, y: 200 }, layer);
+      // textElements = writeSentence("CLICK TO START", { x: 120, y: 200 }, layer);
+      gameState = GAME_STATE.PRE_GAME_WAIT;
+      break;
     }
-
-    // Collision between a PLAYER MISSILE and a ENEMY MISSILE
-    if (
-      collider.data?.isExplosion &&
-      collider.data?.side === SIDES.PLAYER &&
-      body.data?.isMissile &&
-      body.data?.side === SIDES.ENEMY
-    ) {
-      removeMissile(body.data?.id as string, missiles);
-      system.remove(body);
-      system.remove(collider);
+    case GAME_STATE.INIT: {
+      cleanUpTextElements(textElements); // Clean up any previous text elements
+      // Create the initial stage with cities and launchers, and create viable target coordinates
+      targetElements = setupStage(gameState, layer, system);
+      targetPoints = getTargets(targetElements);
+      gameState = GAME_STATE.RUNNING;
+      break;
     }
-  });
+    case GAME_STATE.RUNNING: {
+      // Generate the attacks
+      lastTick = generateAttacks(
+        stage,
+        Math.floor(frame.time),
+        lastTick,
+        layer,
+        system,
+        targetPoints,
+        missiles
+      );
 
-  // Check if game is over
-  if (targetElements.length === 0) {
-    anim.stop();
-    textElements = writeSentence("GAME OVER", { x: 140, y: 100 }, layer);
+      // Handle animations of the elements
+      handleEnemyMissiles(deltaTime, missiles);
+      handleExplosions(deltaTime, explosions, SIDES.ENEMY, ENEMY_CONST);
+      handleExplosions(deltaTime, explosions, SIDES.PLAYER, PLAYER_CONST);
+
+      // Handle collosion detection
+      system.checkAll(({ a, b }: Response) => {
+        const body = a as DetectObject;
+        const collider = b as DetectObject;
+
+        // Collision between an ENEMY MISSILE and a TARGET
+        if (
+          collider.data?.isMissile &&
+          collider.data?.side === SIDES.ENEMY &&
+          body.data?.isTarget
+        ) {
+          handleMissileHit(collider.pos.x, collider.pos.y); // Create explosion at the target hit
+          removeTargetElement(body.data?.id as string, targetElements); // Remove the target element from the game
+          removeMissile(collider.data?.id as string, missiles); // Remove the missile from the game
+          targetPoints = getTargets(targetElements); // Update the target points after removing the target
+          system.remove(body); // Remove the target body from the collision system
+          system.remove(collider); // Remove the missile body from the collision system
+        }
+
+        // Collision between a PLAYER MISSILE and a ENEMY MISSILE
+        if (
+          collider.data?.isExplosion &&
+          collider.data?.side === SIDES.PLAYER &&
+          body.data?.isMissile &&
+          body.data?.side === SIDES.ENEMY
+        ) {
+          removeMissile(body.data?.id as string, missiles);
+          system.remove(body);
+          system.remove(collider);
+        }
+
+        if (collider.data?.isMissile && body.data?.isGround) {
+          handleMissileHit(collider.pos.x, collider.pos.y);
+          removeMissile(collider.data?.id as string, missiles);
+          system.remove(collider);
+        }
+      });
+
+      // Check if game is over
+      if (targetElements.length === 0) {
+        gameState = GAME_STATE.GAME_OVER;
+      }
+      break;
+    }
+    case GAME_STATE.GAME_OVER: {
+      // Clear all Missiles, graphics and collosion bodies
+      missiles.forEach((missile) => {
+        if (missile.detectBody) system.remove(missile.detectBody);
+        missile.object.destroy();
+      });
+      missiles = [];
+      // Clear all Explosions, graphics and collosion bodies
+      explosions.forEach((explosion) => {
+        if (explosion.detectBody) system.remove(explosion.detectBody);
+        explosion.object.destroy();
+      });
+      explosions = [];
+      // Write the game over text
+      textElements = writeSentence("GAME OVER", { x: 170, y: 200 }, layer);
+      gameState = GAME_STATE.GAME_OVER_WAIT;
+      break;
+    }
   }
 }, layer);
 

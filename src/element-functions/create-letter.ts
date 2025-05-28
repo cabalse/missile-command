@@ -5,7 +5,7 @@ import type { Rect } from "konva/lib/shapes/Rect";
 
 const SPACING = 8;
 const HEIGHT = 60;
-const WIDTH = 30;
+const WIDTH = 25;
 
 const createLetter = (
   letter: string,
@@ -37,16 +37,14 @@ const createLetter = (
       return { width: WIDTH + SPACING, elements: [firstLine, secondLine] };
     }
     case "C": {
-      const width = WIDTH * 0.8;
-
       const firstLine = new Konva.Line({
-        points: [x + width, y - HEIGHT, x, y - HEIGHT, x, y, x + width, y],
+        points: [x + WIDTH, y - HEIGHT, x, y - HEIGHT, x, y, x + WIDTH, y],
         stroke: "red",
         strokeWidth: 1,
       });
       layer.add(firstLine);
 
-      return { width: width + SPACING, elements: [firstLine] };
+      return { width: WIDTH + SPACING, elements: [firstLine] };
     }
     case "D": {
       const line = new Konva.Line({
@@ -74,23 +72,44 @@ const createLetter = (
       return { width: WIDTH + SPACING, elements: [line] };
     }
     case "E": {
-      const width = WIDTH * 0.8;
-
       const firstLine = new Konva.Line({
-        points: [x + width, y - HEIGHT, x, y - HEIGHT, x, y, x + width, y],
+        points: [x + WIDTH, y - HEIGHT, x, y - HEIGHT, x, y, x + WIDTH, y],
         stroke: "red",
         strokeWidth: 1,
       });
       layer.add(firstLine);
 
       const secondLine = new Konva.Line({
-        points: [x, y - HEIGHT / 2, x + width / 2, y - HEIGHT / 2],
+        points: [x, y - HEIGHT / 2, x + WIDTH / 2, y - HEIGHT / 2],
         stroke: "red",
         strokeWidth: 1,
       });
       layer.add(secondLine);
 
-      return { width: width + SPACING, elements: [firstLine, secondLine] };
+      return { width: WIDTH + SPACING, elements: [firstLine, secondLine] };
+    }
+    case "G": {
+      const firstLine = new Konva.Line({
+        points: [
+          x + WIDTH,
+          y - HEIGHT,
+          x,
+          y - HEIGHT,
+          x,
+          y,
+          x + WIDTH,
+          y,
+          x + WIDTH,
+          y - HEIGHT / 2,
+          x + WIDTH / 2,
+          y - HEIGHT / 2,
+        ],
+        stroke: "red",
+        strokeWidth: 1,
+      });
+      layer.add(firstLine);
+
+      return { width: WIDTH + SPACING, elements: [firstLine] };
     }
     case "I": {
       const line = new Konva.Line({
@@ -103,16 +122,14 @@ const createLetter = (
       return { width: 1 + SPACING, elements: [line] };
     }
     case "L": {
-      const width = WIDTH * 0.8;
-
       const line = new Konva.Line({
-        points: [x, y - HEIGHT, x, y, x + width, y],
+        points: [x, y - HEIGHT, x, y, x + WIDTH, y],
         stroke: "red",
         strokeWidth: 1,
       });
       layer.add(line);
 
-      return { width: width + SPACING, elements: [line] };
+      return { width: WIDTH + SPACING, elements: [line] };
     }
     case "M": {
       const line = new Konva.Line({
@@ -145,22 +162,64 @@ const createLetter = (
 
       return { width: WIDTH + SPACING, elements: [line] };
     }
-    case "S": {
-      const width = WIDTH * 0.8;
+    case "O": {
+      const firstLine = new Konva.Line({
+        points: [
+          x + WIDTH,
+          y - HEIGHT,
+          x,
+          y - HEIGHT,
+          x,
+          y,
+          x + WIDTH,
+          y,
+          x + WIDTH,
+          y - HEIGHT,
+        ],
+        stroke: "red",
+        strokeWidth: 1,
+      });
+      layer.add(firstLine);
 
+      return { width: WIDTH + SPACING, elements: [firstLine] };
+    }
+    case "R": {
       const line = new Konva.Line({
         points: [
           x,
           y,
-          x + width,
+          x,
+          y - HEIGHT,
+          x + WIDTH,
+          y - HEIGHT,
+          x + WIDTH,
+          y - HEIGHT / 2,
+          x,
+          y - HEIGHT / 2,
+          x + WIDTH,
           y,
-          x + width,
+        ],
+        stroke: "red",
+        strokeWidth: 1,
+      });
+      layer.add(line);
+
+      return { width: WIDTH + SPACING, elements: [line] };
+    }
+    case "S": {
+      const line = new Konva.Line({
+        points: [
+          x,
+          y,
+          x + WIDTH,
+          y,
+          x + WIDTH,
           y - HEIGHT / 2,
           x,
           y - HEIGHT / 2,
           x,
           y - HEIGHT,
-          x + width,
+          x + WIDTH,
           y - HEIGHT,
         ],
         stroke: "red",
@@ -170,7 +229,21 @@ const createLetter = (
       layer.add(line);
 
       return {
-        width: width + SPACING,
+        width: WIDTH + SPACING,
+        elements: [line],
+      };
+    }
+    case "V": {
+      const line = new Konva.Line({
+        points: [x, y - HEIGHT, x + WIDTH / 2, y, x + WIDTH, y - HEIGHT],
+        stroke: "red",
+        strokeWidth: 1,
+      });
+
+      layer.add(line);
+
+      return {
+        width: WIDTH + SPACING,
         elements: [line],
       };
     }

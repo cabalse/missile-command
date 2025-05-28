@@ -8,7 +8,7 @@ const DIMENSIONS = {
 };
 
 const CONST = {
-  TIME_FRAGMENT: 400, // milliseconds
+  TIME_FRAGMENT: 50, // milliseconds 400
   TIME_BETWEEN_TICKS: 1000, // milliseconds
 };
 
