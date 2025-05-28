@@ -5,7 +5,7 @@ import getCirclePoints from "../utilities/get-circle-points";
 import type { FractionData } from "../types/fraction-data";
 import { type SidesKey } from "../types/sides";
 import type { Body, System } from "detect-collisions";
-import type { DetectCircle } from "../types/detect-circle";
+import type { DetectObject } from "../types/detect-object";
 
 const CreateExplosion = (
   layer: Layer,
@@ -23,7 +23,7 @@ const CreateExplosion = (
     constants.STRIKE_SEGMENTS
   );
 
-  const circleDetect = system.createCircle(center, radius) as DetectCircle;
+  const circleDetect = system.createCircle(center, radius) as DetectObject;
 
   circleDetect.data = {
     isExplosion: true,

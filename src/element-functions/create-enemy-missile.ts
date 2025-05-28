@@ -8,9 +8,9 @@ import type { Missile } from "../types/missile";
 import type { Layer } from "konva/lib/Layer";
 import type { FractionData } from "../types/fraction-data";
 import type { Body, System } from "detect-collisions";
-import type { DetectLine } from "../types/detect-line";
 import type { Coordinate } from "../types/coordinate";
 import SIDES from "../types/sides";
+import type { DetectObject } from "../types/detect-object";
 
 const createEnemyMissile = (
   layer: Layer,
@@ -55,7 +55,7 @@ const createEnemyMissile = (
   const lineDetect = system.createLine(
     linePoints.startPoint,
     linePoints.endPoint
-  ) as DetectLine;
+  ) as DetectObject;
 
   lineDetect.data = { id: missileID, isMissile: true, side: SIDES.ENEMY };
 

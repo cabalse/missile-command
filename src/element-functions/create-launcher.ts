@@ -3,16 +3,17 @@ import type { Body, System } from "detect-collisions";
 import type { Layer } from "konva/lib/Layer";
 
 import type { Coordinate } from "../types/coordinate";
-import type { DetectBox } from "../types/detect-box";
 import type { Launcher } from "../types/launcher";
 import launcherPoints from "../figures/launcher-points";
+import type { DetectObject } from "../types/detect-object";
+import getRandomNumber from "../utilities/get-random-number";
 
 const createLauncher = (
   position: Coordinate,
   layer: Layer,
   system: System<Body>
 ): Launcher => {
-  const id = `launcher-${Date.now()}`;
+  const id = `launcher-${getRandomNumber(0, 1000000)}`;
   const x = position.x;
   const y = position.y;
 
@@ -41,7 +42,7 @@ const createLauncher = (
   layer.add(line);
 
   const detectPos = { x: x + 28, y: y - 30 };
-  const detectBox = system.createBox(detectPos, 14, 10) as DetectBox;
+  const detectBox = system.createBox(detectPos, 14, 10) as DetectObject;
   detectBox.data = { id: id, isTarget: true };
 
   const launcher: Launcher = {

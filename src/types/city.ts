@@ -1,11 +1,11 @@
 import type Konva from "konva";
 import type { Coordinate } from "./coordinate";
-import type { Box } from "detect-collisions";
+import type { DetectObject } from "./detect-object";
 
 type City = {
   id: string;
   object: Konva.Line;
-  detectBody?: Box;
+  detectBody?: DetectObject;
   position: Coordinate;
   width: number;
   height: number;

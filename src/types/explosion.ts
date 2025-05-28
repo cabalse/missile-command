@@ -1,12 +1,12 @@
 import type Konva from "konva";
 import type { SidesKey } from "./sides";
-import type { Circle } from "detect-collisions";
+import type { DetectObject } from "./detect-object";
 
 type Explosion = {
   id: string;
   side: SidesKey;
   object: Konva.Line;
-  detectBody?: Circle;
+  detectBody?: DetectObject;
   position: {
     x: number;
     y: number;

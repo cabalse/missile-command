@@ -1,13 +1,13 @@
 import type Konva from "konva";
 import type { Coordinate } from "./coordinate";
-import type { Line } from "detect-collisions";
 import type { SidesKey } from "./sides";
+import type { DetectObject } from "./detect-object";
 
 type Missile = {
   id: string;
   side: SidesKey;
   object: Konva.Line;
-  detectBody?: Line;
+  detectBody?: DetectObject;
   start: Coordinate;
   target: Coordinate;
   length: number;
