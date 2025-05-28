@@ -8,7 +8,7 @@ const DIMENSIONS = {
 };
 
 const CONST = {
-  TIME_FRAGMENT: 500, // milliseconds
+  TIME_FRAGMENT: 400, // milliseconds
   TIME_BETWEEN_TICKS: 1000, // milliseconds
 };
 
@@ -23,7 +23,7 @@ const PLAYER_CONST: FractionData = {
   STRIKE_RADIUS: 0,
   STRIKE_SEGMENTS: 12,
   STRIKE_EXPAND_SPEED: 15,
-  STRIKE_MAX_RADIUS: 50,
+  STRIKE_MAX_RADIUS: 25,
 };
 
 const ENEMY_CONST: FractionData = {
@@ -36,7 +36,7 @@ const ENEMY_CONST: FractionData = {
 
   STRIKE_RADIUS: 0,
   STRIKE_SEGMENTS: 8,
-  STRIKE_EXPAND_SPEED: 5,
+  STRIKE_EXPAND_SPEED: 30,
   STRIKE_MAX_RADIUS: 80,
 };
 

@@ -12,6 +12,7 @@ const createCity = (
   layer: Layer,
   system: System<Body>
 ): City => {
+  const id = `city-${Date.now()}`;
   const x = position.x;
   const y = position.y;
 
@@ -26,9 +27,10 @@ const createCity = (
 
   const detectPos = { x: x, y: y - 17 };
   const detectBox = system.createBox(detectPos, 27, 17) as DetectBox;
+  detectBox.data = { id: id, isTarget: true };
 
   const city: City = {
-    id: `city-${Date.now()}`,
+    id: id,
     object: line,
     detectBody: detectBox,
     position: { x, y },

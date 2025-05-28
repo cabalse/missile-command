@@ -57,7 +57,7 @@ const createEnemyMissile = (
     linePoints.endPoint
   ) as DetectLine;
 
-  lineDetect.data = { id: missileID, isMissile: true };
+  lineDetect.data = { id: missileID, isMissile: true, side: SIDES.ENEMY };
 
   // Create the missile object with its properties
   const missile: Missile = {

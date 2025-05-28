@@ -12,6 +12,7 @@ const createLauncher = (
   layer: Layer,
   system: System<Body>
 ): Launcher => {
+  const id = `launcher-${Date.now()}`;
   const x = position.x;
   const y = position.y;
 
@@ -41,9 +42,10 @@ const createLauncher = (
 
   const detectPos = { x: x + 28, y: y - 30 };
   const detectBox = system.createBox(detectPos, 14, 10) as DetectBox;
+  detectBox.data = { id: id, isTarget: true };
 
   const launcher: Launcher = {
-    id: `launcher-${Date.now()}`,
+    id: id,
     object: line,
     detectBody: detectBox,
     position: { x, y },
