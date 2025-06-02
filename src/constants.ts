@@ -1,4 +1,4 @@
-import type { FractionData } from "./types/fraction-data";
+import type { MissileData } from "./types/missile-data";
 import type { StageData } from "./types/stage-data";
 import WAVE_PATTERN from "./types/wave-pattern";
 
@@ -8,11 +8,11 @@ const DIMENSIONS = {
 };
 
 const CONST = {
-  TIME_FRAGMENT: 50, // milliseconds 400
-  TIME_BETWEEN_TICKS: 1000, // milliseconds
+  TIME_FRAME: 1000, // Time per frame in milliseconds
+  TIME_TICKS: 1000, // Time per tick in milliseconds
 };
 
-const PLAYER_CONST: FractionData = {
+const PLAYER_MISSILE: MissileData = {
   MISSILE_SPEED: 35,
   MISSILE_LENGTH: 50,
   MISSILE_OFFSET: 0,
@@ -26,8 +26,8 @@ const PLAYER_CONST: FractionData = {
   STRIKE_MAX_RADIUS: 25,
 };
 
-const ENEMY_CONST: FractionData = {
-  MISSILE_SPEED: 7,
+const ENEMY_MISSILE: MissileData = {
+  MISSILE_SPEED: 50,
   MISSILE_LENGTH: 100,
   MISSILE_OFFSET: 0,
 
@@ -40,17 +40,9 @@ const ENEMY_CONST: FractionData = {
   STRIKE_MAX_RADIUS: 80,
 };
 
-const STAGE_CONST: StageData[] = [
-  {
-    ID: 0,
-    TITLE: "Stage 1",
-    TIME_LIMIT: 0,
-    MISSILE_LIMIT: 0,
-    WAVE_LIMIT: 0,
-    MISSILE_SPEED: 0,
-    MAX_MISSILES_IN_WAVE: 0,
-    WAVE_PATTERN: [WAVE_PATTERN.RANDOM],
-  },
-];
-
-export { CONST, DIMENSIONS, PLAYER_CONST, ENEMY_CONST, STAGE_CONST };
+export {
+  CONST,
+  DIMENSIONS,
+  PLAYER_MISSILE as PLAYER_CONST,
+  ENEMY_MISSILE as ENEMY_CONST,
+};

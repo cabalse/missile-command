@@ -6,17 +6,17 @@ import getRandomNumber from "../utilities/get-random-number";
 
 import type { Missile } from "../types/missile";
 import type { Layer } from "konva/lib/Layer";
-import type { FractionData } from "../types/fraction-data";
 import type { Body, System } from "detect-collisions";
 import type { Coordinate } from "../types/coordinate";
 import SIDES from "../types/sides";
 import type { DetectObject } from "../types/detect-object";
+import type { MissileData } from "../types/missile-data";
 
 const createEnemyMissile = (
   layer: Layer,
   system: System<Body>,
   targets: Coordinate[],
-  constants: FractionData
+  constants: MissileData
 ): Missile => {
   // Missile ID
   const missileID = `enemy-${Date.now()}`;

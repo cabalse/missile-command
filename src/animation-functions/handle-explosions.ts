@@ -1,5 +1,6 @@
+import getMoveBySpeed from "../helpers/get-move-by-speed";
 import type { Explosion } from "../types/explosion";
-import type { FractionData } from "../types/fraction-data";
+import type { MissileData } from "../types/missile-data";
 import type { SidesKey } from "../types/sides";
 import getCirclePoints from "../utilities/get-circle-points";
 
@@ -7,18 +8,20 @@ const handleExplosions = (
   deltaTime: number,
   data: Explosion[],
   side: SidesKey,
-  constants: FractionData
+  missileData: MissileData
 ) => {
   data.forEach((explosion) => {
     if (explosion.side !== side) return;
 
-    const radius = explosion.radius + constants.STRIKE_EXPAND_SPEED * deltaTime;
+    const radius =
+      explosion.radius +
+      getMoveBySpeed(missileData.STRIKE_EXPAND_SPEED, deltaTime);
 
     explosion.object.points(
       getCirclePoints(
         { x: explosion.position.x, y: explosion.position.y },
         radius,
-        constants.STRIKE_SEGMENTS
+        missileData.STRIKE_SEGMENTS
       )
     );
 
@@ -32,7 +35,7 @@ const handleExplosions = (
   data.forEach((explosion) => {
     if (explosion.side !== side) return;
 
-    if (explosion.radius > constants.STRIKE_MAX_RADIUS) {
+    if (explosion.radius > missileData.STRIKE_MAX_RADIUS) {
       const index = data.indexOf(explosion);
 
       if (index > -1) {

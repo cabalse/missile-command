@@ -1,3 +1,4 @@
+import getMoveBySpeed from "../helpers/get-move-by-speed";
 import type { Missile } from "../types/missile";
 import SIDES from "../types/sides";
 import getLine from "../utilities/get-line";
@@ -6,7 +7,7 @@ const handleEnemyMissiles = (deltaTime: number, data: Missile[]) => {
   data.forEach((missile) => {
     if (missile.side !== SIDES.ENEMY) return;
 
-    missile.offset += missile.speed * deltaTime;
+    missile.offset += getMoveBySpeed(missile.speed, deltaTime);
 
     const linePoints = getLine(
       missile.start,

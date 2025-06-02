@@ -29,11 +29,19 @@ import handleText from "./animation-functions/handle-text";
 import type { GameStateKey } from "./types/game-state";
 import GAME_STATE from "./types/game-state";
 import cleanUpTextElements from "./helpers/cleanup-text-elements";
+import generateWave from "./generate-wave";
+import type { WaveData } from "./types/wave-data";
 
 let gameState: GameStateKey = GAME_STATE.PRE_GAME;
-let stage = 0;
-let lastTick = 0;
-let ticks = 0;
+let ticks = 0; // Current tick count
+let lastTickTime = 0; // Last tick time
+let currentWaveMetric: WaveData = {
+  currentStage: 0,
+  currentWave: 0,
+  firstTick: 0,
+  lastTick: 0,
+  totalMissilesFired: 0,
+};
 
 let missiles: Missile[] = [];
 let explosions: Explosion[] = [];
@@ -78,8 +86,8 @@ const handleMissileHit = (x: number, y: number) => {
 const anim = new Konva.Animation(function (frame) {
   if (!frame) return;
 
-  const deltaTime = frame.timeDiff / CONST.TIME_FRAGMENT;
-  if (Math.floor(frame.time) > lastTick) ticks += 1;
+  const deltaTime = frame.timeDiff;
+  if (Math.floor(frame.time) > lastTickTime) ticks += 1;
 
   switch (gameState) {
     case GAME_STATE.PRE_GAME: {
@@ -97,15 +105,14 @@ const anim = new Konva.Animation(function (frame) {
       break;
     }
     case GAME_STATE.RUNNING: {
-      // Generate the attacks
-      lastTick = generateAttacks(
-        stage,
-        Math.floor(frame.time),
-        lastTick,
-        layer,
-        system,
+      // Generate the attacks in waves
+      currentWaveMetric = generateWave(
+        currentWaveMetric,
+        ticks,
         targetPoints,
-        missiles
+        missiles,
+        layer,
+        system
       );
 
       // Handle animations of the elements

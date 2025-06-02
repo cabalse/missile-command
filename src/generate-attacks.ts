@@ -20,7 +20,7 @@ const generateAttacks = (
   const tooManyMissiles = numberOfMissiles >= ENEMY_CONST.MAX_MISSILES;
 
   if (Math.floor(currentTime) > lastTick) {
-    internalLastTick = Math.floor(currentTime) + CONST.TIME_BETWEEN_TICKS;
+    internalLastTick = Math.floor(currentTime) + CONST.TIME_TICKS;
     if (!tooManyMissiles) {
       missiles.push(createEnemyMissile(layer, system, targets, ENEMY_CONST));
     }

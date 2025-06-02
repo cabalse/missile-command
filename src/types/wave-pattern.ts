@@ -5,6 +5,7 @@ const WAVE_PATTERN = {
   RAINBOW: "rainbow",
   SINGLE: "single",
   SPREAD: "spread",
+  ANNIHILATION: "annihilation",
 };
 
 type WavePatternKey = (typeof WAVE_PATTERN)[keyof typeof WAVE_PATTERN];

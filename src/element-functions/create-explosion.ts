@@ -2,7 +2,7 @@ import Konva from "konva";
 import type { Explosion } from "../types/explosion";
 import type { Layer } from "konva/lib/Layer";
 import getCirclePoints from "../utilities/get-circle-points";
-import type { FractionData } from "../types/fraction-data";
+import type { FractionData } from "../types/missile-data";
 import { type SidesKey } from "../types/sides";
 import type { Body, System } from "detect-collisions";
 import type { DetectObject } from "../types/detect-object";
