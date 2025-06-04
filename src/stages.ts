@@ -6,7 +6,7 @@ const STAGES: StageData[] = [
     ID: 1,
     TITLE: "Stage 1",
     TIME_LIMIT: 0,
-    MISSILE_LIMIT: 15,
+    MISSILE_LIMIT: 1,
     WAVE_LIMIT: 0,
     MISSILE_SPEED: 50,
     MAX_MISSILES_IN_WAVE: 5,

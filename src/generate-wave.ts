@@ -48,6 +48,8 @@ const generateWave = (
     current_stage.MISSILE_LIMIT != 0 &&
     retCurrentWaveMetric.totalMissilesFired >= current_stage.MISSILE_LIMIT;
 
+  const missilesStillInFlight = missiles.length > 0;
+
   switch (current_wave_pattern) {
     case WAVE_PATTERN.NONE: {
       break;
@@ -96,7 +98,7 @@ const generateWave = (
     }
   }
 
-  if (reachedMaxMissiles) {
+  if (reachedMaxMissiles && !missilesStillInFlight) {
     retCurrentWaveMetric.currentStage++;
     retCurrentWaveMetric.currentWave = 0;
     retCurrentWaveMetric.firstTick = currentTick;

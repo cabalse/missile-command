@@ -1,3 +1,4 @@
+import type { Body, System } from "detect-collisions";
 import getMoveBySpeed from "../helpers/get-move-by-speed";
 import type { Explosion } from "../types/explosion";
 import type { MissileData } from "../types/missile-data";
@@ -8,7 +9,8 @@ const handleExplosions = (
   deltaTime: number,
   data: Explosion[],
   side: SidesKey,
-  missileData: MissileData
+  missileData: MissileData,
+  system: System<Body>
 ) => {
   data.forEach((explosion) => {
     if (explosion.side !== side) return;
@@ -40,6 +42,7 @@ const handleExplosions = (
 
       if (index > -1) {
         explosion.object.destroy();
+        if (explosion.detectBody) system.remove(explosion.detectBody);
         data.splice(index, 1);
       }
     }

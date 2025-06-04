@@ -29,6 +29,8 @@ import generateWave from "./generate-wave";
 import { ENEMY_CONST, PLAYER_CONST } from "./constants";
 
 import "./style.css";
+import cleanupTargetElements from "./helpers/cleanup-target-elements";
+import setUpFrame from "./element-functions/setup-frame";
 
 let gameState: GameStateKey = GAME_STATE.PRE_GAME;
 let ticks = 0; // Current tick count
@@ -72,11 +74,11 @@ const handleMouseDown = (
 };
 
 // Set up the Konva stage and layer, handle the player on click events
-const { layer, line } = setUpKonva(system, handleMouseDown);
+const { layer: main_graphic_layer } = setUpKonva(system, handleMouseDown);
 
 const handleMissileHit = (x: number, y: number) => {
   explosions.push(
-    CreateExplosion(layer, x, y, SIDES.ENEMY, system, ENEMY_CONST)
+    CreateExplosion(main_graphic_layer, x, y, SIDES.ENEMY, system, ENEMY_CONST)
   );
 };
 
@@ -89,17 +91,29 @@ const anim = new Konva.Animation(function (frame) {
 
   switch (gameState) {
     case GAME_STATE.PRE_GAME: {
-      textElements = writeSentence("MISSILE COMMAND", { x: 90, y: 200 }, layer);
+      textElements = writeSentence(
+        "MISSILE COMMAND",
+        { x: 90, y: 200 },
+        main_graphic_layer
+      );
       // textElements = writeSentence("CLICK TO START", { x: 120, y: 200 }, layer);
       gameState = GAME_STATE.PRE_GAME_WAIT;
       break;
     }
     case GAME_STATE.INIT: {
-      cleanUpTextElements(textElements); // Clean up any previous text elements
+      main_graphic_layer.destroyChildren();
       // Create the initial stage with cities and launchers, and create viable target coordinates
-      targetElements = setupStage(gameState, layer, system);
+      setUpFrame(main_graphic_layer);
+      targetElements = setupStage(gameState, main_graphic_layer, system);
       targetPoints = getTargets(targetElements);
       gameState = GAME_STATE.RUNNING;
+      currentWaveMetric = {
+        currentStage: 0,
+        currentWave: 0,
+        firstTick: ticks,
+        lastTick: ticks,
+        totalMissilesFired: 0,
+      };
       break;
     }
     case GAME_STATE.RUNNING: {
@@ -109,7 +123,7 @@ const anim = new Konva.Animation(function (frame) {
         ticks,
         targetPoints,
         missiles,
-        layer,
+        main_graphic_layer,
         system,
         () => {
           gameState = GAME_STATE.GAME_OVER; // End the game when all waves are completed
@@ -120,8 +134,14 @@ const anim = new Konva.Animation(function (frame) {
 
       // Handle animations of the elements
       handleEnemyMissiles(deltaTime, missiles);
-      handleExplosions(deltaTime, explosions, SIDES.ENEMY, ENEMY_CONST);
-      handleExplosions(deltaTime, explosions, SIDES.PLAYER, PLAYER_CONST);
+      handleExplosions(deltaTime, explosions, SIDES.ENEMY, ENEMY_CONST, system);
+      handleExplosions(
+        deltaTime,
+        explosions,
+        SIDES.PLAYER,
+        PLAYER_CONST,
+        system
+      );
 
       // Handle collosion detection
       system.checkAll(({ a, b }: Response) => {
@@ -175,24 +195,28 @@ const anim = new Konva.Animation(function (frame) {
       break;
     }
     case GAME_STATE.GAME_OVER: {
-      // Clear all Missiles, graphics and collosion bodies
+      // Clear all Missiles, graphics and collisions bodies
       missiles.forEach((missile) => {
         if (missile.detectBody) system.remove(missile.detectBody);
         missile.object.destroy();
       });
       missiles = [];
-      // Clear all Explosions, graphics and collosion bodies
+      // Clear all Explosions, graphics and collisions bodies
       explosions.forEach((explosion) => {
         if (explosion.detectBody) system.remove(explosion.detectBody);
         explosion.object.destroy();
       });
       explosions = [];
       // Write the game over text
-      textElements = writeSentence("GAME OVER", { x: 170, y: 200 }, layer);
+      textElements = writeSentence(
+        "GAME OVER",
+        { x: 170, y: 200 },
+        main_graphic_layer
+      );
       gameState = GAME_STATE.GAME_OVER_WAIT;
       break;
     }
   }
-}, layer);
+}, main_graphic_layer);
 
 anim.start();
