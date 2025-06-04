@@ -1,12 +1,17 @@
 import Konva from "konva";
+import type { Line } from "konva/lib/shapes/Line";
+import type { Rect } from "konva/lib/shapes/Rect";
 import { Response, System } from "detect-collisions";
 
 import type { Missile } from "./types/missile";
 import type { Explosion } from "./types/explosion";
 import type { Launcher } from "./types/launcher";
 import type { City } from "./types/city";
-
-import { CONST, ENEMY_CONST, PLAYER_CONST } from "./constants";
+import type { DetectObject } from "./types/detect-object";
+import type { Coordinate } from "./types/coordinate";
+import type { GameStateKey } from "./types/game-state";
+import type { WaveData } from "./types/wave-data";
+import GAME_STATE from "./types/game-state";
 import SIDES from "./types/sides";
 
 import setUpKonva from "./element-functions/setup-konva";
@@ -14,23 +19,16 @@ import handleEnemyMissiles from "./animation-functions/handle-enemy-missiles";
 import handleExplosions from "./animation-functions/handle-explosions";
 import CreateExplosion from "./element-functions/create-explosion";
 import setupStage from "./element-functions/setup-stage";
-import generateAttacks from "./generate-attacks";
 import getTargets from "./element-functions/get-targets";
 import removeMissile from "./helpers/remove-missile";
 import removeTargetElement from "./helpers/remove-target-element";
-
-import "./style.css";
-import type { DetectObject } from "./types/detect-object";
-import type { Coordinate } from "./types/coordinate";
 import writeSentence from "./element-functions/write-sentence";
-import type { Line } from "konva/lib/shapes/Line";
-import type { Rect } from "konva/lib/shapes/Rect";
-import handleText from "./animation-functions/handle-text";
-import type { GameStateKey } from "./types/game-state";
-import GAME_STATE from "./types/game-state";
 import cleanUpTextElements from "./helpers/cleanup-text-elements";
 import generateWave from "./generate-wave";
-import type { WaveData } from "./types/wave-data";
+
+import { ENEMY_CONST, PLAYER_CONST } from "./constants";
+
+import "./style.css";
 
 let gameState: GameStateKey = GAME_STATE.PRE_GAME;
 let ticks = 0; // Current tick count
@@ -112,8 +110,13 @@ const anim = new Konva.Animation(function (frame) {
         targetPoints,
         missiles,
         layer,
-        system
+        system,
+        () => {
+          gameState = GAME_STATE.GAME_OVER; // End the game when all waves are completed
+        }
       );
+
+      if (gameState === GAME_STATE.GAME_OVER) break;
 
       // Handle animations of the elements
       handleEnemyMissiles(deltaTime, missiles);
@@ -158,8 +161,15 @@ const anim = new Konva.Animation(function (frame) {
         }
       });
 
-      // Check if game is over
+      // Check if game is over by all Targets are destroyed
       if (targetElements.length === 0) {
+        gameState = GAME_STATE.GAME_OVER;
+      }
+      // Check if game is over when all waves are completed
+      if (
+        currentWaveMetric.currentStage >= 1 &&
+        currentWaveMetric.currentWave >= 3
+      ) {
         gameState = GAME_STATE.GAME_OVER;
       }
       break;

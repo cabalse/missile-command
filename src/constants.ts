@@ -1,6 +1,4 @@
 import type { MissileData } from "./types/missile-data";
-import type { StageData } from "./types/stage-data";
-import WAVE_PATTERN from "./types/wave-pattern";
 
 const DIMENSIONS = {
   WIDTH: 600,

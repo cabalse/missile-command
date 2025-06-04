@@ -1,14 +1,17 @@
 import type Konva from "konva";
+import type { Body, System } from "detect-collisions";
+
+import countEnemyMissiles from "./helpers/count-enemy-missiles";
+import createEnemyMissile from "./element-functions/create-enemy-missile";
+import componseEnemyMissileData from "./helpers/compose-enemy-missile-data";
+
 import type { Coordinate } from "./types/coordinate";
 import type { Missile } from "./types/missile";
-import type { Body, System } from "detect-collisions";
-import STAGES from "./stages";
 import type { WaveData } from "./types/wave-data";
-import countEnemyMissiles from "./helpers/count-enemy-missiles";
 import WAVE_PATTERN from "./types/wave-pattern";
-import createEnemyMissile from "./element-functions/create-enemy-missile";
+
 import { ENEMY_CONST } from "./constants";
-import componseEnemyMissileData from "./helpers/compose-enemy-missile-data";
+import STAGES from "./stages";
 
 const generateWave = (
   currentWaveMetric: WaveData,
@@ -16,8 +19,14 @@ const generateWave = (
   targets: Coordinate[],
   missiles: Missile[],
   layer: Konva.Layer,
-  system: System<Body>
+  system: System<Body>,
+  endOfStagesCallback: () => void
 ): WaveData => {
+  if (STAGES.length <= currentWaveMetric.currentStage) {
+    endOfStagesCallback();
+    return currentWaveMetric;
+  }
+
   const retCurrentWaveMetric = { ...currentWaveMetric };
   const current_stage = STAGES[retCurrentWaveMetric.currentStage];
 
