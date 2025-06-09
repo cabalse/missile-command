@@ -22,19 +22,12 @@ const generateWave = (
   system: System<Body>,
   endOfStagesCallback: () => void
 ): WaveData => {
-  if (STAGES.length <= currentWaveMetric.currentStage) {
-    endOfStagesCallback();
-    return currentWaveMetric;
-  }
-
   const retCurrentWaveMetric = { ...currentWaveMetric };
   const current_stage = STAGES[retCurrentWaveMetric.currentStage];
 
-  console.log(
-    retCurrentWaveMetric.currentWave,
-    current_stage.WAVE_PATTERN,
-    current_stage.WAVE_PATTERN[retCurrentWaveMetric.currentWave]
-  );
+  retCurrentWaveMetric.stages = STAGES.length;
+  retCurrentWaveMetric.currentStageWaves =
+    STAGES[retCurrentWaveMetric.currentStage].WAVE_PATTERN.length;
 
   const current_wave_pattern =
     current_stage.WAVE_PATTERN[retCurrentWaveMetric.currentWave];
@@ -98,11 +91,24 @@ const generateWave = (
     }
   }
 
-  if (reachedMaxMissiles && !missilesStillInFlight) {
+  // Maximum number of Missiles has been reached for the stage and no missiles are still in flight
+  // Or we have reached the last Wave of the current Stage.
+  // If so we move to a new Stage and its first Wave
+  if (
+    (reachedMaxMissiles && !missilesStillInFlight) ||
+    retCurrentWaveMetric.currentStageWaves < retCurrentWaveMetric.currentWave
+  ) {
     retCurrentWaveMetric.currentStage++;
     retCurrentWaveMetric.currentWave = 0;
     retCurrentWaveMetric.firstTick = currentTick;
     retCurrentWaveMetric.totalMissilesFired = 0;
+  }
+
+  // The maximum number of Stages has been reached,
+  // Lets call the end of stages callback method if present
+  if (retCurrentWaveMetric.stages < retCurrentWaveMetric.currentStage) {
+    if (endOfStagesCallback) endOfStagesCallback();
+    return retCurrentWaveMetric;
   }
 
   return retCurrentWaveMetric;

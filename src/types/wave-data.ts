@@ -1,4 +1,6 @@
 type WaveData = {
+  stages: number; //
+  currentStageWaves: number;
   currentStage: number;
   currentWave: number;
   firstTick: number;

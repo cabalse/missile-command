@@ -23,19 +23,19 @@ import getTargets from "./element-functions/get-targets";
 import removeMissile from "./helpers/remove-missile";
 import removeTargetElement from "./helpers/remove-target-element";
 import writeSentence from "./element-functions/write-sentence";
-import cleanUpTextElements from "./helpers/cleanup-text-elements";
 import generateWave from "./generate-wave";
+import setUpFrame from "./element-functions/setup-frame";
 
 import { ENEMY_CONST, PLAYER_CONST } from "./constants";
 
 import "./style.css";
-import cleanupTargetElements from "./helpers/cleanup-target-elements";
-import setUpFrame from "./element-functions/setup-frame";
 
 let gameState: GameStateKey = GAME_STATE.PRE_GAME;
 let ticks = 0; // Current tick count
 let lastTickTime = 0; // Last tick time
 let currentWaveMetric: WaveData = {
+  stages: 0,
+  currentStageWaves: 0,
   currentStage: 0,
   currentWave: 0,
   firstTick: 0,
@@ -108,6 +108,8 @@ const anim = new Konva.Animation(function (frame) {
       targetPoints = getTargets(targetElements);
       gameState = GAME_STATE.RUNNING;
       currentWaveMetric = {
+        stages: 0,
+        currentStageWaves: 0,
         currentStage: 0,
         currentWave: 0,
         firstTick: ticks,
