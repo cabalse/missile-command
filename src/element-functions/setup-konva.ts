@@ -24,11 +24,6 @@ const setUpKonva = (
 
   stage.add(layer);
 
-  // const lineDetect = system.createLine(lineStart, lineEnd) as DetectObject;
-  // lineDetect.data = {
-  //   isGround: true,
-  // };
-
   return { layer: layer };
 };
 

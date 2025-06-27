@@ -10,7 +10,7 @@ import type { City } from "./types/city";
 import type { DetectObject } from "./types/detect-object";
 import type { Coordinate } from "./types/coordinate";
 import type { GameStateKey } from "./types/game-state";
-import type { WaveData } from "./types/wave-data";
+import type { EnemyAttackData } from "./types/enemy-attack-data";
 import GAME_STATE from "./types/game-state";
 import SIDES from "./types/sides";
 
@@ -23,24 +23,23 @@ import getTargets from "./element-functions/get-targets";
 import removeMissile from "./helpers/remove-missile";
 import removeTargetElement from "./helpers/remove-target-element";
 import writeSentence from "./element-functions/write-sentence";
-import generateWave from "./generate-wave";
 import setUpFrame from "./element-functions/setup-frame";
 
 import { ENEMY_CONST, PLAYER_CONST } from "./constants";
 
 import "./style.css";
+import generateWave from "./generate-wave";
 
 let gameState: GameStateKey = GAME_STATE.PRE_GAME;
 let ticks = 0; // Current tick count
 let lastTickTime = 0; // Last tick time
-let currentWaveMetric: WaveData = {
-  stages: 0,
-  currentStageWaves: 0,
+let enemyAttackData: EnemyAttackData = {
   currentStage: 0,
   currentWave: 0,
-  firstTick: 0,
-  lastTick: 0,
+  currentTick: 0,
+  firstWaveTick: 0,
   totalMissilesFired: 0,
+  totalWaves: 0,
 };
 
 let missiles: Missile[] = [];
@@ -103,30 +102,34 @@ const anim = new Konva.Animation(function (frame) {
     case GAME_STATE.INIT: {
       main_graphic_layer.destroyChildren();
       // Create the initial stage with cities and launchers, and create viable target coordinates
-      setUpFrame(main_graphic_layer);
+      setUpFrame(main_graphic_layer, system);
       targetElements = setupStage(gameState, main_graphic_layer, system);
       targetPoints = getTargets(targetElements);
       gameState = GAME_STATE.RUNNING;
-      currentWaveMetric = {
-        stages: 0,
-        currentStageWaves: 0,
+      enemyAttackData = {
         currentStage: 0,
         currentWave: 0,
-        firstTick: ticks,
-        lastTick: ticks,
+        currentTick: 0,
+        firstWaveTick: 0,
         totalMissilesFired: 0,
+        totalWaves: 0,
       };
       break;
     }
     case GAME_STATE.RUNNING: {
-      // Generate the attacks in waves
-      currentWaveMetric = generateWave(
-        currentWaveMetric,
+      enemyAttackData = generateWave(
+        enemyAttackData,
         ticks,
         targetPoints,
         missiles,
         main_graphic_layer,
         system,
+        () => {
+          console.log("End of Wave Callback");
+        },
+        () => {
+          console.log("End of Stage Callback");
+        },
         () => {
           gameState = GAME_STATE.GAME_OVER; // End the game when all waves are completed
         }
@@ -176,6 +179,13 @@ const anim = new Konva.Animation(function (frame) {
           system.remove(collider);
         }
 
+        // Collision between an ENEMY MISSILE and GROUND
+        if (collider.data?.isMissile && body.data?.isGround) {
+          handleMissileHit(collider.pos.x, collider.pos.y);
+          removeMissile(collider.data?.id as string, missiles);
+          system.remove(collider);
+        }
+
         if (collider.data?.isMissile && body.data?.isGround) {
           handleMissileHit(collider.pos.x, collider.pos.y);
           removeMissile(collider.data?.id as string, missiles);
@@ -189,8 +199,8 @@ const anim = new Konva.Animation(function (frame) {
       }
       // Check if game is over when all waves are completed
       if (
-        currentWaveMetric.currentStage >= 1 &&
-        currentWaveMetric.currentWave >= 3
+        enemyAttackData.currentStage >= 1 &&
+        enemyAttackData.currentWave >= 3
       ) {
         gameState = GAME_STATE.GAME_OVER;
       }

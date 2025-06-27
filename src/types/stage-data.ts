@@ -15,10 +15,11 @@ type StageData = {
   ID: number;
   TITLE: string;
   TIME_LIMIT: number; // in seconds, 0 means no limit
-  MISSILE_LIMIT: number; // maximum number of missiles allowed, 0 means no limit
+  MISSILE_LIMIT: number; // maximum number of missiles allowed in the Stage, 0 means no limit
   WAVE_LIMIT: number; // maximum number of waves, 0 means no limit
   MISSILE_SPEED: number; // speed of enemy missiles
   MAX_MISSILES_IN_WAVE: number; // maximum number of missiles in a wave
+  MAX_MISSILES_IN_FLIGHT: number; // maximum number of missiles in flight at the same time, 0 means no limit
   WAVE_PATTERN: WavePatternKey[]; // key for the wave pattern, if empty, the Random pattern is used
 };
 

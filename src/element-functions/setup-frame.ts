@@ -1,7 +1,9 @@
 import Konva from "konva";
 import { DIMENSIONS } from "../constants";
+import type { Body, System } from "detect-collisions";
+import type { DetectObject } from "../types/detect-object";
 
-const setUpFrame = (layer: Konva.Layer): void => {
+const setUpFrame = (layer: Konva.Layer, system: System<Body>): void => {
   var frame = new Konva.Line({
     points: [
       0,
@@ -31,6 +33,11 @@ const setUpFrame = (layer: Konva.Layer): void => {
     strokeWidth: 1,
     lineCap: "round",
   });
+
+  const lineDetect = system.createLine(lineStart, lineEnd) as DetectObject;
+  lineDetect.data = {
+    isGround: true,
+  };
 
   layer.add(line);
 };
